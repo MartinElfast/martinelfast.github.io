@@ -12,15 +12,14 @@ var material = new THREE.MeshBasicMaterial({
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-camera.position.z = 5;
+camera.position.z = 8;
 
-var animate = function() {
-    requestAnimationFrame(animate);
+(function gameLoop() {
+    requestAnimationFrame(gameLoop);
 
     cube.rotation.x += 0.1;
     cube.rotation.y += 0.1;
 
     renderer.render(scene, camera);
-};
-
-animate();
+    update();
+})();
