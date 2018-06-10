@@ -61,7 +61,7 @@ var vertices = [];
 for (var x = 0; x < 10; x++) {
     for (var y = 0; y < 10; y++) {
         for (var z = 0; z < 0; z++) {
-            vertices.push(x, y, z);
+            vertices.push(new THREE.Vector3(x, y, z));
         }
     }
 }
