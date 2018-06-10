@@ -2,6 +2,7 @@
 //FIELDS
 var mouseX = 0,
     mouseY = 0;
+
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 //SCENE
@@ -9,9 +10,9 @@ var scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x000000, 0.001);
 
 //CAM
-var camera = new THREE.PerspectiveCamera(75, (window.innerWidth / 2) / (window.innerHeight / 2), 1, 1000);
-camera.position.z = 10;
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+var camera = new THREE.PerspectiveCamera(75, (window.innerWidth / 2) / (window.innerHeight / 2), 1, 10000);
+camera.position.z = 80;
+camera.lookAt(new THREE.Vector3(0, 0, -1000));
 
 //RENDERERER
 var renderer = new THREE.WebGLRenderer();
