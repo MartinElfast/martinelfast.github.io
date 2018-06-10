@@ -1,53 +1,57 @@
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
 //FIELDS
-var mouseX = 0,
+let mouseX = 0,
     mouseY = 0;
 
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
+const windowHalfX = window.innerWidth / 2;
+const windowHalfY = window.innerHeight / 2;
 //SCENE
-var scene = new THREE.Scene();
+const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x000000, 0.001);
 
 //CAM
-var camera = new THREE.PerspectiveCamera(75, (window.innerWidth / 2) / (window.innerHeight / 2), 1, 10000);
+const camera = new THREE.PerspectiveCamera(75, (window.innerWidth / 2) / (window.innerHeight / 2), 1, 10000);
 camera.position.z = 80;
+camera.position.y = 80;
 camera.lookAt(new THREE.Vector3(0, 0, -1000));
 
 //RENDERERER
-var renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+//STATS
+const stats = new Stats();
+stats.showPanel(0); //fps, ms, mb
+document.body.appendChild(stats.dom);
+
 //CAM CONTROLS
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 //DIRECTIONAL LIGHT
-var directionalLight = new THREE.DirectionalLight(0xff0000, 0.88);
+const directionalLight = new THREE.DirectionalLight(0xff0000, 0.88);
 directionalLight.position.set(-80, 180, 0);
 directionalLight.lookAt(new THREE.Vector3(0, 0, 0));
 
 //SPHERE
-const RADIUS = 50;
-const SEGMENTS = 16;
-const RINGS = 16;
+const radius = 50;
+const segments = 16;
+const rings = 16;
 const sphereMaterial =
     new THREE.MeshLambertMaterial({
         color: 0xff00ff,
     });
 
 const sphere = new THREE.Mesh(
-
     new THREE.SphereGeometry(
-        RADIUS,
-        SEGMENTS,
-        RINGS),
-
+        radius,
+        segments,
+        rings),
     sphereMaterial);
-
 sphere.position.z = -100;
 sphere.position.x = 50;
+
 //POINT LIGHT
 const pointLight = new THREE.PointLight(0x0000FF);
 pointLight.intensity = 1;
@@ -55,30 +59,47 @@ pointLight.position.x = -100;
 pointLight.position.y = -50;
 pointLight.position.z = -100;
 
-var geometry = new THREE.BufferGeometry();
-var vertices = [];
+//GRID
+const size = 500,
+    step = 100;
+const geometry = new THREE.Geometry();
+for (var i = -size; i <= size; i += step) {
 
-for (var x = 0; x < 10; x++) {
-    for (var y = 0; y < 10; y++) {
-        for (var z = 0; z < 0; z++) {
-            vertices.push(new THREE.Vector3(x, y, z));
-        }
-    }
+    geometry.vertices.push(new THREE.Vector3(-size, 0, i));
+    geometry.vertices.push(new THREE.Vector3(size, 0, i));
+
+    geometry.vertices.push(new THREE.Vector3(i, 0, -size));
+    geometry.vertices.push(new THREE.Vector3(i, 0, size));
 }
 
-geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-var sprite = new THREE.TextureLoader().load('./particle.png');
-var material = new THREE.PointsMaterial({
-    size: 35,
-    sizeAttenuation: false,
-    map: sprite,
-    alphaTest: 0.5,
-    transparent: false,
-});
-var particles = new THREE.Points(geometry, material);
+const material = new THREE.LineBasicMaterial({ color: 0x008800, opacity: 1, linewidth: 3 });
 
+const line = new THREE.LineSegments(geometry, material); //Third parameter is "mode" with which you can switch between the Line and LineSegment types.
+scene.add(line);
+// var geometry = new THREE.BufferGeometry();
+// var vertices = [];
+
+// for (var x = 0; x < 10; x++) {
+//     for (var y = 0; y < 10; y++) {
+//         for (var z = 0; z < 0; z++) {
+//             this.vertices.add(new THREE.Vector3(x, y, z));
+//         }
+//     }
+// }
+
+// geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+// var sprite = new THREE.TextureLoader().load('./particle.png');
+// var material = new THREE.PointsMaterial({
+//     size: 35,
+//     sizeAttenuation: false,
+//     map: sprite,
+//     alphaTest: 0.5,
+//     transparent: false,
+// });
+// var particles = new THREE.Points(geometry, material);
+//scene.add(particles);
 scene.add(pointLight);
-scene.add(particles);
+
 scene.add(sphere);
 scene.add(directionalLight);
 
@@ -121,16 +142,17 @@ function onDocumentTouchMove(event) {
 }
 
 
-function update() {
+function update() { //state changes, logic
     controls.update();
+    stats.update();
 }
 
-function render() {
+function render() { //render changes
     renderer.render(scene, camera);
 }
 
-(function gameLoop() {
-    requestAnimationFrame(gameLoop);
+(function loop() {
+    requestAnimationFrame(loop);
 
     update();
     render();
