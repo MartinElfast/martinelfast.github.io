@@ -23,8 +23,8 @@ document.body.appendChild(renderer.domElement);
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 //DIRECTIONAL LIGHT
-var directionalLight = new THREE.DirectionalLight(0xffffff, 0.88);
-directionalLight.position.set(-80, 80, 80);
+var directionalLight = new THREE.DirectionalLight(0xff0000, 0.88);
+directionalLight.position.set(-80, 180, 0);
 directionalLight.lookAt(new THREE.Vector3(0, 0, 0));
 
 //SPHERE
@@ -46,16 +46,15 @@ const sphere = new THREE.Mesh(
     sphereMaterial);
 
 sphere.position.z = -100;
+sphere.position.x = 50;
 //POINT LIGHT
-const pointLight =
-    new THREE.PointLight(0xFFFFFF);
-
-pointLight.position.x = 10;
-pointLight.position.y = 50;
-pointLight.position.z = 130;
+const pointLight = new THREE.PointLight(0x0000FF);
+pointLight.intensity = 1;
+pointLight.position.x = -100;
+pointLight.position.y = -50;
+pointLight.position.z = -100;
 
 var geometry = new THREE.BufferGeometry();
-
 var vertices = [];
 
 for (var x = 0; x < 10; x++) {
