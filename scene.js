@@ -1,4 +1,7 @@
 //if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+//TODO: 
+
 //FIELDS
 let mouseX = 0,
     mouseY = 0;
@@ -10,7 +13,7 @@ const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x000000, 0.001);
 
 //CAM
-const camera = new THREE.PerspectiveCamera(75, (window.innerWidth / 2) / (window.innerHeight / 2), 1, 10000);
+const camera = new THREE.PerspectiveCamera(75, (windowHalfX) / (windowHalfY), 1, 10000);
 camera.position.z = 80;
 camera.position.y = 80;
 camera.lookAt(new THREE.Vector3(0, 0, -1000));
@@ -56,7 +59,7 @@ sphere.position.x = 50;
 const pointLight = new THREE.PointLight(0x0000FF);
 pointLight.intensity = 1;
 pointLight.position.x = -100;
-pointLight.position.y = -50;
+pointLight.position.y = 0;
 pointLight.position.z = -100;
 
 //GRID
@@ -75,29 +78,12 @@ for (var i = -size; i <= size; i += step) {
 const material = new THREE.LineBasicMaterial({ color: 0x008800, opacity: 1, linewidth: 3 });
 
 const line = new THREE.LineSegments(geometry, material); //Third parameter is "mode" with which you can switch between the Line and LineSegment types.
+
+//super one liner anonymous box test
+scene.add(new THREE.Mesh(new THREE.CubeGeometry(8, 8, 8), new THREE.MeshNormalMaterial()));
+
 scene.add(line);
-// var geometry = new THREE.BufferGeometry();
-// var vertices = [];
 
-// for (var x = 0; x < 10; x++) {
-//     for (var y = 0; y < 10; y++) {
-//         for (var z = 0; z < 0; z++) {
-//             this.vertices.add(new THREE.Vector3(x, y, z));
-//         }
-//     }
-// }
-
-// geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-// var sprite = new THREE.TextureLoader().load('./particle.png');
-// var material = new THREE.PointsMaterial({
-//     size: 35,
-//     sizeAttenuation: false,
-//     map: sprite,
-//     alphaTest: 0.5,
-//     transparent: false,
-// });
-// var particles = new THREE.Points(geometry, material);
-//scene.add(particles);
 scene.add(pointLight);
 
 scene.add(sphere);
@@ -180,6 +166,7 @@ function render() { //render changes
 //     alphaTest: 0.5,
 //     transparent: true,
 // });
+
 // var particles = new THREE.Points(geometry, material);
 // var light1 = new THREE.DirectionalLight(0xffffff);
 // light1.position.set(1, 1, 1);
@@ -187,6 +174,28 @@ function render() { //render changes
 // light2.position.set(-1, -1, -1);
 
 // var light3 = new THREE.AmbientLight(0x222222);
+// var geometry = new THREE.BufferGeometry();
+// var vertices = [];
+
+// for (var x = 0; x < 10; x++) {
+//     for (var y = 0; y < 10; y++) {
+//         for (var z = 0; z < 0; z++) {
+//             this.vertices.add(new THREE.Vector3(x, y, z));
+//         }
+//     }
+// }
+//lookup how to build up faces from verts.. ugh.. go for the predefined fucntions for now =)
+// geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+// var sprite = new THREE.TextureLoader().load('./particle.png');
+// var material = new THREE.PointsMaterial({
+//     size: 35,
+//     sizeAttenuation: false,
+//     map: sprite,
+//     alphaTest: 0.5,
+//     transparent: false,
+// });
+// var particles = new THREE.Points(geometry, material);
+//scene.add(particles);
 
 // scene.add(directionalLight);
 // scene.add(light1);

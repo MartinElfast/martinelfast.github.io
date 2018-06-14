@@ -21,14 +21,23 @@
             width: 100%;
             height: 100%
         }
+        
+        #camera-control-description-container {
+            position: absolute;
+            top: 0px;
+            width: 100%;
+            padding: 8px;
+        }
     </style>
 </head>
 
 <body>
+    <div id="camera-control-description-container">
+        Camera Controls:<br> Turn: Press and hold left mouse button<br> Fast zoom: Press and hold the scroll to zoom faster<br>Pan: Press and hold right mouse button to<br>
+    </div>
+
     <div id="stats-container"></div>
-    <span>Use mouse to move camera<br>
-        Hold left mouse button and move<br>
-    Scroll to zoom</span>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/93/three.js"></script>
     <!-- <script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script> -->
     <!-- <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/Detector.js"></script> -->
