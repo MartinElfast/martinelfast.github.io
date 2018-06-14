@@ -94,7 +94,6 @@ scene.add(directionalLight);
 document.addEventListener('mousemove', onDocumentMouseMove, false);
 document.addEventListener('touchstart', onDocumentTouchStart, false);
 document.addEventListener('touchmove', onDocumentTouchMove, false);
-//
 window.addEventListener('resize', onWindowResize, false);
 
 
@@ -127,10 +126,28 @@ function onDocumentTouchMove(event) {
     }
 }
 
+//TODO: clean up this mess, start playing with shaders or integrate WebRTC
+const unNamedCube = scene.children[0];
+var chaosAmount = 18;
+
+(unNamedCube.init = () => {
+    unNamedCube.material.wireframe = true
+})();
+
+unNamedCube.update = () => {
+    unNamedCube.geometry.vertices[pickRandomVertex(unNamedCube)].set(Math.floor(Math.random() * chaosAmount), Math.floor(Math.random() * chaosAmount), Math.floor(Math.random() * chaosAmount));
+    unNamedCube.geometry.vertices[0].set(Math.floor(Math.random() * chaosAmount), Math.floor(Math.random() * chaosAmount), Math.floor(Math.random() * chaosAmount))
+    unNamedCube.geometry.verticesNeedUpdate = true
+}
+
+function pickRandomVertex(obj) {
+    return Math.min(Math.floor(Math.random() * obj.geometry.vertices.length), obj.geometry.vertices.length - 1);
+}
 
 function update() { //state changes, logic
     controls.update();
     stats.update();
+    unNamedCube.update();
 }
 
 function render() { //render changes
@@ -204,3 +221,4 @@ function render() { //render changes
 // scene.add(particles);
 // scene.add(camHelper);
 */
+4
