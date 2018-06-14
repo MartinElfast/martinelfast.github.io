@@ -6,8 +6,8 @@
 let mouseX = 0,
     mouseY = 0;
 
-const windowHalfX = window.innerWidth / 2;
-const windowHalfY = window.innerHeight / 2;
+let windowHalfX = window.innerWidth / 2;
+let windowHalfY = window.innerHeight / 2;
 //SCENE
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x000000, 0.001);
@@ -79,7 +79,7 @@ const material = new THREE.LineBasicMaterial({ color: 0x008800, opacity: 1, line
 
 const line = new THREE.LineSegments(geometry, material); //Third parameter is "mode" with which you can switch between the Line and LineSegment types.
 
-//super one liner anonymous box test
+//one liner anonymous box test, experiment with runtime console manipulation. found on scene.children[0] no surprises thankfully
 scene.add(new THREE.Mesh(new THREE.CubeGeometry(8, 8, 8), new THREE.MeshNormalMaterial()));
 
 scene.add(line);
