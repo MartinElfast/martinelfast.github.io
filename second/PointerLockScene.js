@@ -31,7 +31,7 @@ scene.fog = new THREE.FogExp2(0x000000, 0.001);
 //          CAM
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const camera = new THREE.PerspectiveCamera(75, (windowHalfX) / (windowHalfY), 1, 10000);
+const camera = new THREE.PerspectiveCamera(75, (windowHalfX) / (windowHalfY), 1, 2000);
 
 // camera.position.x = -600;
 // camera.position.y = 400;
@@ -80,7 +80,7 @@ scene.add(controls.getObject());
 
 if (havePointerLock) {
     var element = document.body;
-    var pointerlockchange = function(event) {
+    var pointerlockchange = function (event) {
         if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
             controlsEnabled = true;
             controls.enabled = true;
@@ -91,7 +91,7 @@ if (havePointerLock) {
             instructions.style.display = '';
         }
     };
-    var pointerlockerror = function(event) {
+    var pointerlockerror = function (event) {
         instructions.style.display = '';
     };
     // Hook pointer lock state change events
@@ -101,7 +101,7 @@ if (havePointerLock) {
     document.addEventListener('pointerlockerror', pointerlockerror, false);
     document.addEventListener('mozpointerlockerror', pointerlockerror, false);
     document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
-    instructions.addEventListener('click', function(event) {
+    instructions.addEventListener('click', function (event) {
         instructions.style.display = 'none';
         // Ask the browser to lock the pointer
         element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
@@ -111,7 +111,7 @@ if (havePointerLock) {
     instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 }
 
-var onKeyDown = function(event) {
+var onKeyDown = function (event) {
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
@@ -135,7 +135,7 @@ var onKeyDown = function(event) {
             break;
     }
 };
-var onKeyUp = function(event) {
+var onKeyUp = function (event) {
     switch (event.keyCode) {
         case 38: // up
         case 87: // w
@@ -310,17 +310,55 @@ function onDocumentTouchMove(event) {
 //          EXPERIMENT
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
+let p_range = 1000; //range from top to bottom and left to right.
+let p_distance = 18; //steps inbetween particles
+let p_x = p_y = p_z = 100;
+//let p_material = new THREE.SpriteMaterial();
+let p_material = new THREE.PointsMaterial({
+    color: 0xFFFFFF,
+    size: 10,
+    sizeAttenuation: false,
+    map: THREE.ImageUtils.loadTexture("./particle.png"),
+    blending: THREE.AdditiveBlending,
+    //transparent: false,
+});
+//let particle;
+let count = 0;
+//let particles = new Array();
+let particles = new THREE.Geometry();
 
+for (let idx_x = -p_range; idx_x < p_x; idx_x += p_distance) {
+    for (let idx_y = -p_range; idx_y < p_y; idx_y += p_distance) {
+        for (let idx_z = -p_range; idx_z < p_z; idx_z += p_distance) {
 
+            //let particle = new THREE.Sprite(p_material);
+            let particle = new THREE.Vector3(Math.random() * 100 * idx_x + Math.random() * 100 + idx_x, Math.random() * 100 * idx_y + Math.random() * 100 + idx_y, Math.random() * 100 * idx_z + Math.random() * 100 + idx_z);
+            
+            //particle.scale.x = 2;
+            //particle.scale.y = 2;
+            //particle.position.x = idx_x * 100;
+            //particle.position.y = idx_y * 100;
+            //particle.position.z = -1000;
+            particles.vertices.push(particle);
+            //particles.vertices[particles.vertices.length - 1].material.size = Math.random() * 10;
+            //scene.add(particle);
+        }
+    }
+}
+let particle_system = new THREE.Points(particles, p_material);
+scene.add(particle_system);
+//for (var particle in particles) {
+//    scene.add(particle.);
+//}
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          POPULATE SCENE
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 scene.add(grid);
+scene.add(smallgrid);
 scene.add(pointLight);
 scene.add(directionalLight);
 
-scene.add(smallgrid);
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          CORE FUNCTIONS
