@@ -8,4 +8,4 @@ Live demo: <a href="https://martinelfast.github.io/first/">https://martinelfast.
 
 Live demo: <a href="https://martinelfast.github.io/second/">https://martinelfast.github.io/second/</a>
 
-Update: includes a lot of particles, after some testing it now runs smoothly (60fps+- on laptop without GPU).
+Update: 1.3 million particles/sprites with transparent textures, camera draw distance 1000 @ 60fps (tested on laptop without GPU). Ran into weird bugs with transparancy, solved with turning off depthWrite and depthTest on the texture material.
