@@ -7,3 +7,5 @@ Live demo: <a href="https://martinelfast.github.io/first/">https://martinelfast.
 ### Part 2: Classic first person controls, look around with mouse and move with W,S,A,D keys.
 
 Live demo: <a href="https://martinelfast.github.io/second/">https://martinelfast.github.io/second/</a>
+
+Update: includes a lot of particles, after some testing it now runs smoothly (60fps+- on laptop without GPU).
