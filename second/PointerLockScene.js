@@ -31,7 +31,7 @@ scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
 //          CAM
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const camera = new THREE.PerspectiveCamera( 75, ( windowHalfX ) / ( windowHalfY ), 1, 2000 );
+const camera = new THREE.PerspectiveCamera( 90, ( windowHalfX ) / ( windowHalfY ), 1, 1000 );
 
 // camera.position.x = -600;
 // camera.position.y = 400;
@@ -54,6 +54,28 @@ document.body.appendChild( renderer.domElement );
 const stats = new Stats();
 stats.showPanel( 0 ); // diplay modes for stats graph; 0 = fps,1 =  ms, 2 = mb
 document.body.appendChild( stats.dom );
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          SCENE LIGHTS
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          DIRECTIONAL LIGHT
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+//const directionalLight = new THREE.DirectionalLight( 0xff0000, 0.88 );
+//directionalLight.position.set( -80, 180, 0 );
+//directionalLight.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          POINT LIGHT
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+//const pointLight = new THREE.PointLight( 0x0000FF );
+//pointLight.intensity = 1;
+//pointLight.position.x = -100;
+//pointLight.position.y = 0;
+//pointLight.position.z = -100;
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          CAM CONTROLS / POINTERLOCK
@@ -198,28 +220,6 @@ controls.update = () => {
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          SCENE LIGHTS
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          DIRECTIONAL LIGHT
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-const directionalLight = new THREE.DirectionalLight( 0xff0000, 0.88 );
-directionalLight.position.set( -80, 180, 0 );
-directionalLight.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          POINT LIGHT
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-const pointLight = new THREE.PointLight( 0x0000FF );
-pointLight.intensity = 1;
-pointLight.position.x = -100;
-pointLight.position.y = 0;
-pointLight.position.z = -100;
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          SCENE OBJECTS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
@@ -314,61 +314,68 @@ function onDocumentTouchMove( event ) {
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 let p_range = 1000; //range from top to bottom and left to right.
-let p_distance = 8; //steps inbetween particles
+let p_distance = 10; //steps inbetween particles
 let p_x = p_y = p_z = 100;
 //let particle = new THREE.Vector3();
 let p_textureLoader = new THREE.TextureLoader();
 let particles = new THREE.Geometry();
 let p_material = new THREE.PointsMaterial( {
-    color: 0xFFFFFF,
+    //color: 0xFFFFFF,
     //size: 10,
-    //sizeAttenuation: false,
+    sizeAttenuation: true,
     map: p_textureLoader.load( "./particle.png" ),
-    blending: THREE.AdditiveBlending,
+    //blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    depthTest: false,
     transparent: true,
 } );
-let p_color = new THREE.Color();
-let p_colors = [];
-let idx = 0;
-let p_count = p_x * p_y * p_z;
+//let p_color = new THREE.Color();
+//let p_colors = [];
+//let p_count = p_x * p_y * p_z;
+let p_count = 0;
 for ( let idx_x = -p_range; idx_x < p_x; idx_x += p_distance ) {
     for ( let idx_y = -p_range; idx_y < p_y; idx_y += p_distance ) {
         for ( let idx_z = -p_range; idx_z < p_z; idx_z += p_distance ) {
 
-            let particle = new THREE.Sprite(p_material);
-            particle = new THREE.Vector3( randomizePosition( idx_x, p_distance ), randomizePosition( idx_y, p_distance ), randomizePosition( idx_z, p_distance ) );
-            p_color.setHSL( idx_x, idx_y, idx_z );
-            p_colors.push( p_color.r, p_color.g, p_color.b );
-            
+            //let particle = new THREE.Sprite( p_material );
+
+            //let particle = new THREE.Vector3( randomizePosition( idx_x, p_distance ), randomizePosition( idx_y, p_distance ), randomizePosition( idx_z, p_distance ) );
+
+            particles.vertices.push( randomizedVector3( idx_x, idx_y, idx_z, p_distance ) );
+
+            //p_color.setHSL( idx_x, idx_y, idx_z );
+            //p_colors.push( p_color.r, p_color.g, p_color.b );
             //particle.scale.x = 2;
             //particle.scale.y = 2;
             //particle.position.x = idx_x * 100;
             //particle.position.y = idx_y * 100;
             //particle.position.z = -1000;
-            particles.vertices.push( particle );
             //particles.vertices[particles.vertices.length - 1].material.size = Math.random() * 10;
             //scene.add(particle);
-            idx++;
         }
     }
 }
-particles.colors = p_colors;
+//particles.colors = p_colors;
 
-function randomizePosition( coordinate, distance = 100 ) {
-    return ( ( Math.random() * 10 ) * coordinate + ( Math.random() * distance ) );
+function randomizePosition( coordinate, spacing = 100 ) {
+    return ( ( Math.random() * 10 ) * coordinate + ( Math.random() * 10 * spacing ) );
+};
+function randomizedVector3( x, y, z, spacing ) {
+    return new THREE.Vector3( randomizePosition( x, spacing ), randomizePosition( y, spacing ), randomizePosition( z, spacing ) );
 };
 
 let particle_system = new THREE.Points( particles, p_material );
-scene.add( particle_system );
 
+console.log( "there are " + particles.vertices.length + " particles in this scene." )
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          POPULATE SCENE
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
+scene.add( particle_system );
 scene.add( grid );
 scene.add( smallgrid );
-scene.add( pointLight );
-scene.add( directionalLight );
+//scene.add( pointLight );
+//scene.add( directionalLight );
 
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
