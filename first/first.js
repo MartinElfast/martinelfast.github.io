@@ -1,4 +1,4 @@
-if (!Detector.webgl) Detector.addGetWebGLMessage();
+if ( !Detector.webgl ) Detector.addGetWebGLMessage();
 
 //TODO: 
 
@@ -23,39 +23,40 @@ const INV_MAX_FPS = 1 / 60; //multiplicative inverse of desired fps, used for Ph
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x000000, 0.001);
+scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          CAM
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const camera = new THREE.PerspectiveCamera(75, (windowHalfX) / (windowHalfY), 1, 10000);
-camera.position.z = 80;
-camera.position.y = 80;
-camera.lookAt(new THREE.Vector3(0, 0, -1000));
+const camera = new THREE.PerspectiveCamera( 75, ( windowHalfX ) / ( windowHalfY ), 1, 10000 );
+camera.position.z = 150;
+camera.position.y = 150;
+camera.position.x = -50;
+camera.lookAt( new THREE.Vector3( 0, 10, -1000 ) );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          RENDERERER
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          STATS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 const stats = new Stats();
-stats.showPanel(0); // diplay modes for stats graph; 0 = fps,1 =  ms, 2 = mb
-document.body.appendChild(stats.dom);
+stats.showPanel( 0 ); // diplay modes for stats graph; 0 = fps,1 =  ms, 2 = mb
+document.body.appendChild( stats.dom );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          CAM CONTROLS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new THREE.OrbitControls( camera, renderer.domElement );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          SCENE LIGHTS
@@ -65,19 +66,29 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 //          DIRECTIONAL LIGHT
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const directionalLight = new THREE.DirectionalLight(0xff0000, 0.88);
-directionalLight.position.set(-80, 180, 0);
-directionalLight.lookAt(new THREE.Vector3(0, 0, 0));
+const directionalLight = new THREE.DirectionalLight( 0xFF00AA, 0.98 );
+directionalLight.position.set( -80, 180, 0 );
+directionalLight.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          POINT LIGHT
+//          POINT LIGHT BLUE
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const pointLight = new THREE.PointLight(0x0000FF);
+const pointLight2 = new THREE.PointLight( 0x0000FF );
+pointLight2.intensity = 2;
+pointLight2.position.x = -100;
+pointLight2.position.y = 0;
+pointLight2.position.z = -50;
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          POINT LIGHT GREEN
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+const pointLight = new THREE.PointLight( 0xAAFF00 );
 pointLight.intensity = 1;
-pointLight.position.x = -100;
-pointLight.position.y = 0;
-pointLight.position.z = -100;
+pointLight.position.x = 200;
+pointLight.position.y = -80;
+pointLight.position.z = 0;
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          SCENE OBJECTS
@@ -87,22 +98,30 @@ pointLight.position.z = -100;
 //          SPHERE
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-const radius = 50;
-const segments = 16;
-const rings = 16;
+const radius = 88;
+const segments = 8;
+const rings = 5;
 const sphereMaterial =
-    new THREE.MeshLambertMaterial({
-        color: 0xff00ff,
-    });
+    new THREE.MeshPhongMaterial( {
+        color: 0xFFFFFF,
+    } );
 
 const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(
         radius,
         segments,
-        rings),
-    sphereMaterial);
+        rings ),
+    sphereMaterial );
 sphere.position.z = -100;
 sphere.position.x = 50;
+
+( sphere.init = () => {
+    sphere.matrixAutoUpdate = true;
+} )();
+
+sphere.update = ( timeStep ) => {
+    sphere.rotation.x = sphere.rotation.y += Math.sin( 0.8 * timeStep );
+};
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          GRID
@@ -111,31 +130,50 @@ sphere.position.x = 50;
 const size = 500,
     step = 100;
 const geometry = new THREE.Geometry();
-for (var i = -size; i <= size; i += step) {
+for ( var i = -size; i <= size; i += step ) {
 
-    geometry.vertices.push(new THREE.Vector3(-size, 0, i));
-    geometry.vertices.push(new THREE.Vector3(size, 0, i));
+    geometry.vertices.push( new THREE.Vector3( -size, 0, i ) );
+    geometry.vertices.push( new THREE.Vector3( size, 0, i ) );
 
-    geometry.vertices.push(new THREE.Vector3(i, 0, -size));
-    geometry.vertices.push(new THREE.Vector3(i, 0, size));
+    geometry.vertices.push( new THREE.Vector3( i, 0, -size ) );
+    geometry.vertices.push( new THREE.Vector3( i, 0, size ) );
 }
 
-const material = new THREE.LineBasicMaterial({
+const material = new THREE.LineBasicMaterial( {
     color: 0x008800,
     opacity: 1,
     linewidth: 3
-});
+} );
 
-const grid = new THREE.LineSegments(geometry, material); //Third optional parameter is "mode" with which you can switch between the Line and LineSegment types.
+const grid = new THREE.LineSegments( geometry, material ); //Third optional parameter is "mode" with which you can switch between the Line and LineSegment types.
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          Moving random vertex cube
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+scene.add( new THREE.Mesh( new THREE.CubeGeometry( 8, 8, 8 ), new THREE.MeshNormalMaterial() ) ); //Unnamed cube, experiment with manipulating mesh runtime.
+
+let unNamedCube = scene.children[0];
+
+( unNamedCube.init = () => {
+    unNamedCube.material.wireframe = true;
+} )();
+
+unNamedCube.update = () => {
+    //Selects a random vertex gives it a new random position
+    unNamedCube.geometry.vertices[pickRandomVertex( unNamedCube )]
+        .set( randomizeAndFloor( 24 ), randomizeAndFloor( 24 ), randomizeAndFloor( 24 ) );
+    unNamedCube.geometry.verticesNeedUpdate = true
+}
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          EVENTS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-document.addEventListener('mousemove', onDocumentMouseMove, false);
-document.addEventListener('touchstart', onDocumentTouchStart, false);
-document.addEventListener('touchmove', onDocumentTouchMove, false);
-window.addEventListener('resize', onWindowResize, false);
+document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+window.addEventListener( 'resize', onWindowResize, false );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          EVENT IMPL
@@ -146,24 +184,24 @@ function onWindowResize() {
     windowHalfY = window.innerHeight / 2;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function onDocumentMouseMove(event) {
+function onDocumentMouseMove( event ) {
     mouseX = event.clientX - windowHalfX;
     mouseY = event.clientY - windowHalfY;
 }
 
-function onDocumentTouchStart(event) {
-    if (event.touches.length == 1) {
+function onDocumentTouchStart( event ) {
+    if ( event.touches.length == 1 ) {
         event.preventDefault();
         mouseX = event.touches[0].pageX - windowHalfX;
         mouseY = event.touches[0].pageY - windowHalfY;
     }
 }
 
-function onDocumentTouchMove(event) {
-    if (event.touches.length == 1) {
+function onDocumentTouchMove( event ) {
+    if ( event.touches.length == 1 ) {
         event.preventDefault();
         mouseX = event.touches[0].pageX - windowHalfX;
         mouseY = event.touches[0].pageY - windowHalfY;
@@ -171,109 +209,49 @@ function onDocumentTouchMove(event) {
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          METHODS AND FUNCTIONS
+//          FUNCTIONS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          Moving random vertex cube
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-scene.add(new THREE.Mesh(new THREE.CubeGeometry(8, 8, 8), new THREE.MeshNormalMaterial())); //Unnamed cube, experiment with manipulating mesh runtime.
-let unNamedCube = scene.children[0];
-//sconst chaosAmount = 24;
-
-(unNamedCube.init = () => {
-    unNamedCube.material.wireframe = true;
-})();
-
-unNamedCube.update = () => {
-    //Selects a random vertex gives it a new random position
-    unNamedCube.geometry.vertices[pickRandomVertex(unNamedCube)]
-        .set(randomizeAndFloor(24), randomizeAndFloor(24), randomizeAndFloor(24));
-    unNamedCube.geometry.verticesNeedUpdate = true
+function pickRandomVertex( obj ) {
+    return Math.min( Math.floor( Math.random() * obj.geometry.vertices.length ), obj.geometry.vertices.length - 1 );
 }
 
-function pickRandomVertex(obj) {
-    return Math.min(Math.floor(Math.random() * obj.geometry.vertices.length), obj.geometry.vertices.length - 1);
+function randomizeAndFloor( chaosAmount ) {
+    return Math.floor( Math.random() * chaosAmount );
 }
 
-function randomizeAndFloor(chaosAmount) {
-    return Math.floor(Math.random() * chaosAmount);
-}
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          Sphere
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-(sphere.init = () => {
-    //sphere.matrixAutoUpdate = true;
-})();
-
-sphere.update = (timeStep) => {
-    sphere.rotation.x += 0.01 * timeStep;
-};
-
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          LATEST EXPERIMENT
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-class Vertex {
-    constructor(x,y,z) {
-        this.pos = new THREE.Vector3(x,y,z);
-    }
-}
-
-verts = new Array();
-let chunk_size_x = 10;
-let chunk_size_y = 10;
-let chunk_size_z = 10;
-let idx = 0;
-for (let x = 0; x < chunk_size_x; x++) {
-    for (let y = 0; y < chunk_size_y; y++) {
-        for (let z = 0; z < chunk_size_z; z++) {
-            verts[idx++] = new Vertex(x, y, z);
-        }
-    }
-}
-let voxelMat = new THREE.MeshLambertMaterial()
-let voxelGeometry = new THREE.Geometry(verts);
-let voxelMesh = new THREE.Mesh(voxelGeometry, voxelMat);
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          POPULATE SCENE
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-
-
-scene.add(grid);
-scene.add(pointLight);
-scene.add(sphere);
-scene.add(directionalLight);
-scene.add(voxelMesh);
+scene.add( grid );
+scene.add( pointLight );
+scene.add( pointLight2 );
+scene.add( sphere );
+scene.add( directionalLight );
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 //          CORE FUNCTIONS
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-
-
-function update(timeStep) { //state updates and logic
-    controls.update(timeStep);
-    stats.update(timeStep);
-    unNamedCube.update(timeStep);
-    sphere.update(timeStep);
+function update( timeStep ) { //state updates and logic
+    controls.update( timeStep );
+    stats.update( timeStep );
+    unNamedCube.update( timeStep );
+    sphere.update( timeStep );
 }
 
 function render() { //render state changes
-    renderer.render(scene, camera);
+    renderer.render( scene, camera );
 }
 
-(function loop() {
-    requestAnimationFrame(loop);
+( function loop() {
+    requestAnimationFrame( loop );
 
-    update(clock.getDelta());
+    update( clock.getDelta() );
 
     render();
-})();
+} )();
 /*
 
 // put below in the loop function
