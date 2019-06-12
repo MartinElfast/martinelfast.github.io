@@ -151,7 +151,7 @@ const grid = new THREE.LineSegments( geometry, material ); //Third optional para
 //          Moving random vertex cube
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
-scene.add( new THREE.Mesh( new THREE.CubeGeometry( 8, 8, 8 ), new THREE.MeshNormalMaterial() ) ); //Unnamed cube, experiment with manipulating mesh runtime.
+scene.add( new THREE.Mesh( new THREE.CubeGeometry( 28, 28, 28 ), new THREE.MeshNormalMaterial() ) ); //Unnamed cube, experiment with manipulating mesh runtime.
 
 let unNamedCube = scene.children[0];
 
@@ -164,6 +164,18 @@ unNamedCube.update = () => {
     unNamedCube.geometry.vertices[pickRandomVertex( unNamedCube )]
         .set( randomizeAndFloor( 24 ), randomizeAndFloor( 24 ), randomizeAndFloor( 24 ) );
     unNamedCube.geometry.verticesNeedUpdate = true
+}
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//          FUNCTIONS
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+function pickRandomVertex( obj ) {
+    return Math.min( Math.floor( Math.random() * obj.geometry.vertices.length ), obj.geometry.vertices.length - 1 );
+}
+
+function randomizeAndFloor( chaosAmount ) {
+    return Math.floor( Math.random() * chaosAmount );
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -206,18 +218,6 @@ function onDocumentTouchMove( event ) {
         mouseX = event.touches[0].pageX - windowHalfX;
         mouseY = event.touches[0].pageY - windowHalfY;
     }
-}
-
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//          FUNCTIONS
-//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-
-function pickRandomVertex( obj ) {
-    return Math.min( Math.floor( Math.random() * obj.geometry.vertices.length ), obj.geometry.vertices.length - 1 );
-}
-
-function randomizeAndFloor( chaosAmount ) {
-    return Math.floor( Math.random() * chaosAmount );
 }
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
