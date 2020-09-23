@@ -1,7 +1,4 @@
 //if ( !Detector.webgl ) Detector.addGetWebGLMessage();
-
-import { OrbitControls } from 'https://unpkg.com/three@<VERSION>/examples/jsm/controls/OrbitControls.js';
-
 //TODO: 
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
